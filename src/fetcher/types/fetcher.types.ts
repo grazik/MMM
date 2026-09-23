@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import type { MediaKind } from "@/shared/types/api.types";
+import type { MediaKind } from "@/types/api.types";
 import type { ManifestItem } from "@/types/manifest.types";
 import type { ValueResult } from "@/types/result.types";
 import type { POST_SCHEMA } from "../nine-gag-schema";

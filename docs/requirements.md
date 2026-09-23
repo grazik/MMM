@@ -117,7 +117,6 @@ Mobile-first, single page. The UI text is in **English**, but the app name stays
   - **Only one video plays at a time**: the most visible one.
   - A **mute toggle** button (at least 44×44px, bottom-right corner of the video, with an `aria-label` of "Unmute"/"Mute"). Every video starts muted, and unmuting applies only to that video. Show the button only on videos with audio if 9gag provides that information; otherwise on all videos.
   - No length limit and no skipping of long videos.
-- Preload the next one or two items so scrolling feels instant.
 
 ### 5.3 Visual design
 
@@ -180,7 +179,7 @@ src/
   fetcher/    # 9gag client, selection, download, atomic publish
   scheduler/  # cron, startup catch-up, retries
   web/        # Vite frontend
-  shared/     # types shared by server and web
+  types/      # types used by more than one module, server and web alike
 test/
 ```
 

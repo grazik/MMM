@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { Config } from "@/types/config.types";
 
-const CONFIG_SCHEMA = z.object({
+export const CONFIG_SCHEMA = z.object({
   port: z.coerce.number().int().positive().default(3_000),
   dataDir: z.string().min(1).default("/data"),
   timezone: z.string().min(1).default("Europe/Warsaw"),
@@ -10,7 +10,7 @@ const CONFIG_SCHEMA = z.object({
   retentionDays: z.coerce.number().int().positive().default(3),
   setSize: z.coerce.number().int().positive().default(10),
   maxPages: z.coerce.number().int().positive().default(5),
-}) satisfies z.ZodType<Config>;
+});
 
 // Invalid configuration is a deploy bug, so fail fast instead of returning a Result.
 export const loadConfig = (env: NodeJS.ProcessEnv = process.env): Config => {

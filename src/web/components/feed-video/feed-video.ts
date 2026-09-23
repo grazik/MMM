@@ -1,4 +1,4 @@
-import type { TodayItem } from "@/shared/types/api.types";
+import type { TodayItem } from "@/types/api.types";
 import { ICONS } from "@/web/constants/icons";
 import { UI_STRINGS } from "@/web/constants/strings";
 import { el } from "@/web/lib/dom";
@@ -45,11 +45,5 @@ export const createFeedVideo = (item: FeedVideoItem) => {
   // hasAudio undefined means 9gag gave no audio info, so the toggle is shown.
   if (item.hasAudio !== false) wrapper.append(createMuteToggle(video));
 
-  return {
-    element: wrapper,
-    video,
-    preload: () => {
-      video.preload = "auto";
-    },
-  };
+  return { element: wrapper, video };
 };

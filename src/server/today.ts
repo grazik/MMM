@@ -1,7 +1,7 @@
 import { createLogger } from "@/log/logger";
 import { isStale } from "@/scheduler/fetch-time";
-import type { TodayItem, TodayResponse } from "@/shared/types/api.types";
 import { listSetDates, readManifest } from "@/storage/sets";
+import type { TodayItem, TodayResponse } from "@/types/api.types";
 import type { Config } from "@/types/config.types";
 import type { Manifest } from "@/types/manifest.types";
 import { getMediaUrl } from "./media-path";

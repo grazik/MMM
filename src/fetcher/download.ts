@@ -4,7 +4,7 @@ import path from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import type { ReadableStream } from "node:stream/web";
-import type { MediaKind } from "@/shared/types/api.types";
+import type { MediaKind } from "@/types/api.types";
 import type { ValueResult } from "@/types/result.types";
 import { MEDIA_TIMEOUT_MS } from "./constants/fetcher.constants";
 import type { DownloadMedia } from "./types/fetcher.types";

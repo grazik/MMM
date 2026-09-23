@@ -1,4 +1,4 @@
-import type { TodayItem } from "@/shared/types/api.types";
+import type { TodayItem } from "@/types/api.types";
 
 export type ManifestItem = Pick<
   TodayItem,

@@ -20,7 +20,7 @@ const render = async (root: HTMLElement) => {
     return;
   }
 
-  const { date, stale, items } = result.data;
+  const { date, stale, items } = result.value;
   const header = createAppHeader(date);
   if (items.length === 0) {
     root.replaceChildren(header, createEmptyState(UI_STRINGS.empty));

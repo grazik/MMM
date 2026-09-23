@@ -1,4 +1,4 @@
-import type { TodayItem } from "@/shared/types/api.types";
+import type { TodayItem } from "@/types/api.types";
 import { createFeedVideo } from "@/web/components/feed-video/feed-video";
 import { formatCounter } from "@/web/constants/strings";
 import { el } from "@/web/lib/dom";
@@ -20,12 +20,7 @@ const createImage = (item: TodayItem, isFirst: boolean) => {
   img.loading = isFirst ? "eager" : "lazy";
   if (isFirst) img.fetchPriority = "high";
   img.src = item.mediaUrl;
-  return {
-    element: img,
-    preload: () => {
-      img.loading = "eager";
-    },
-  };
+  return img;
 };
 
 const createMedia = (options: FeedItemOptions) => {
@@ -34,9 +29,9 @@ const createMedia = (options: FeedItemOptions) => {
     case "image":
       return createImage(item, position === 1);
     case "video": {
-      const media = createFeedVideo(item);
-      onVideo(media.video);
-      return media;
+      const { element, video } = createFeedVideo(item);
+      onVideo(video);
+      return element;
     }
     default:
       return item.kind satisfies never;
@@ -59,9 +54,8 @@ export const createFeedItem = (options: FeedItemOptions) => {
       `${item.width} / ${item.height}`,
     );
   }
-  const media = createMedia(options);
-  frame.append(media.element);
+  frame.append(createMedia(options));
 
   article.append(header, frame);
-  return { element: article, preload: media.preload };
+  return article;
 };
