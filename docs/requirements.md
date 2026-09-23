@@ -21,6 +21,8 @@ The point is to **limit meme exposure** while keeping a bit of the fun of scroll
 
 9gag has **no official public API**. The app has to rely on the JSON that 9gag's own web app uses, or on data embedded in its pages. This can break or be blocked by bot protection, so feasibility must be proven before anything else is built.
 
+> **Outcome (2026-09-23, approved by the owner):** the web JSON is blocked by a Cloudflare challenge, so the app uses **9gag's mobile app API** (`api.9gag.com`, signed requests with a guest token, no account), which is not challenged. See `docs/9gag-api.md` for the request details.
+
 ### Rules
 
 - Run the spike **from the home network** (the owner's machine is fine).
@@ -38,8 +40,8 @@ The point is to **limit meme exposure** while keeping a bit of the fun of scroll
 
 ### Deliverables
 
-- `spike/` — a small throwaway script that fetches Hot and downloads the media of the first few posts.
-- `SPIKE.md` — answers to the questions above, plus a trimmed sample JSON response saved as `spike/sample-hot.json` (it will be reused as a test fixture).
+- A small throwaway script that fetches Hot and downloads the media of the first few posts. It is kept locally and never committed to `main`.
+- `docs/9gag-api.md` — answers to the questions above, plus a trimmed sample JSON response saved as `test/fixtures/sample-hot.json` (reused as a test fixture).
 
 ### Go / no-go
 
@@ -50,7 +52,7 @@ The point is to **limit meme exposure** while keeping a bit of the fun of scroll
 
 ### 4.1 Daily set
 
-- **Source:** 9gag Hot feed, all sections. NSFW posts are **not** filtered in the MVP.
+- **Source:** 9gag Hot feed, all sections: the mobile app API's default Hot list (`/v2/post-list/group/default/type/hot`, paginated with `/olderThan/<last post id>`). It differs from the personalised feed on the 9gag.com front page; that is expected. NSFW posts are **not** filtered in the MVP.
 - **Day boundary:** all dates use the **Europe/Warsaw** timezone. The set for date D is fetched at 06:00 on D.
 - **Selection:** walk the Hot feed in order and take the **first 10 eligible posts**. A post is eligible when:
   - its type is supported: a single image, an animated post, or a video;
@@ -165,7 +167,7 @@ A visual mockup exists (owner has the link) showing the feed, the end of the fee
   - `DATA_DIR/tmp/` for sets being built.
 - **Lint and format:** Biome.
 - **Tests:** Vitest, for the logic only:
-  - eligibility and selection (including skipping unsupported types and yesterday's duplicates, using `spike/sample-hot.json` as a fixture);
+  - eligibility and selection (including skipping unsupported types and yesterday's duplicates, using `test/fixtures/sample-hot.json` as a fixture);
   - stale determination around the 06:00 boundary;
   - retention.
     No end-to-end tests.
@@ -179,7 +181,6 @@ src/
   scheduler/  # cron, startup catch-up, retries
   web/        # Vite frontend
   shared/     # types shared by server and web
-spike/
 test/
 ```
 
@@ -241,7 +242,7 @@ The server side of the deploy (the SSH forced command that pulls and restarts th
 
 ## 9. Out of scope (post-MVP)
 
-- Notifications when fetching fails
+- Notifications and extra logging when fetching fails (e.g. the undocumented app API changes)
 - PWA / install to home screen
 - NSFW filtering
 - Archive of past days
@@ -252,7 +253,7 @@ The server side of the deploy (the SSH forced command that pulls and restarts th
 
 ## 10. Acceptance criteria
 
-- [ ] Phase 0 is done, `SPIKE.md` exists, and the owner approved continuing.
+- [ ] Phase 0 is done, `docs/9gag-api.md` exists, and the owner approved continuing.
 - [ ] At 06:00 Europe/Warsaw a new set of exactly 10 displayable items is built and published atomically.
 - [ ] Posts from the previous set never appear in the new set; unsupported post types are skipped.
 - [ ] After a restart after 06:00 with no set for today, a fetch starts immediately.
