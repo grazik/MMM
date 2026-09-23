@@ -1,0 +1,21 @@
+.app-header {
+  padding: calc(var(--space-6) + env(safe-area-inset-top)) var(--gutter)
+    var(--space-4);
+}
+
+.app-header__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.app-header__date {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: 15px;
+}
