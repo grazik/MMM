@@ -1,0 +1,27 @@
+# Example compose file for the "apps" VM. Copy it next to a ./data directory
+# that is writable by uid 1000 (the image's non-root "node" user):
+#   mkdir -p data && sudo chown 1000:1000 data
+services:
+  mmm:
+    image: ghcr.io/grazik/mmm:latest
+    container_name: mmm
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    environment:
+      PORT: "3000"
+      DATA_DIR: /data
+      TIMEZONE: Europe/Warsaw
+      FETCH_CRON: "0 6 * * *"
+      RETRY_INTERVAL_MINUTES: "15"
+      RETENTION_DAYS: "3"
+      SET_SIZE: "10"
+      MAX_PAGES: "5"
+    networks:
+      - caddy
+
+networks:
+  caddy:
+    external: true
+    # Placeholder: the name of the Docker network shared with Caddy.
+    name: CADDY_NETWORK_NAME
