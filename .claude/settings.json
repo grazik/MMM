@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run lint)",
+      "Bash(npm run format)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run test:*)",
+      "Bash(npm run build)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git switch:*)",
+      "Bash(git commit:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr checks:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(npm install:*)",
+      "Bash(docker run:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Bash(gh pr merge:*)"
+    ]
+  }
+}
