@@ -1,7 +1,7 @@
+import { decodeHTML } from "entities";
 import type { ManifestItem } from "@/types/manifest.types";
 import { FETCH_ERRORS } from "./constants/fetcher.constants";
 import { chooseMedia, isSupportedPostType } from "./media";
-import { decodeHtmlEntities } from "./title";
 import type {
   DownloadMedia,
   FetchHotPage,
@@ -60,7 +60,7 @@ const buildItem = async (
     : null;
   return {
     id: post.id,
-    title: decodeHtmlEntities(post.title),
+    title: decodeHTML(post.title),
     kind: media.kind,
     mediaFile: mediaFile.value,
     ...(posterFile?.ok ? { posterFile: posterFile.value } : {}),

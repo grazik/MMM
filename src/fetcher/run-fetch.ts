@@ -18,9 +18,6 @@ import type { DownloadMedia } from "./types/fetcher.types";
 
 const log = createLogger("fetcher");
 
-// The lock file carries our pid, so the lock alone can't tell an overlapping call in this process from a stale lock.
-let isRunningInProcess = false;
-
 const loadPreviousIds = async (
   dataDir: string,
   targetDate: string,
@@ -124,9 +121,6 @@ export const runFetch = async (
     return result;
   };
 
-  if (isRunningInProcess)
-    return finish({ ok: false, message: FETCH_ERRORS.lockHeld });
-  isRunningInProcess = true;
   try {
     const release = await acquireLock(config.dataDir);
     if (!release) return finish({ ok: false, message: FETCH_ERRORS.lockHeld });
@@ -142,7 +136,5 @@ export const runFetch = async (
       ok: false,
       message: `${FETCH_ERRORS.unexpected}: ${String(err)}`,
     });
-  } finally {
-    isRunningInProcess = false;
   }
 };

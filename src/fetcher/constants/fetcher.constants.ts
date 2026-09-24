@@ -1,8 +1,8 @@
 export const API_TIMEOUT_MS = 15_000;
 export const MEDIA_TIMEOUT_MS = 60_000;
 
-// A lock this old belongs to a crashed or hung run; a real fetch finishes in minutes.
-export const LOCK_STALE_AFTER_MS = 60 * 60 * 1_000;
+// The holder refreshes the lock at half this interval, so only a crashed or frozen run misses it.
+export const LOCK_STALE_AFTER_MS = 30_000;
 
 export const LOCK_FILE_NAME = "fetch.lock";
 

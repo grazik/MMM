@@ -4,7 +4,6 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { acquireLock, getLockPath } from "@/fetcher/lock";
 import { cleanTmpDir, createBuildDir, publishSet } from "@/fetcher/publish";
-import { decodeHtmlEntities } from "@/fetcher/title";
 
 let dataDir: string;
 
@@ -67,25 +66,26 @@ describe("cleanTmpDir", () => {
 });
 
 describe("acquireLock", () => {
-  it("refuses a second lock held by a live process", async () => {
-    await fs.mkdir(path.join(dataDir, "tmp"), { recursive: true });
-    await fs.writeFile(
-      getLockPath(dataDir),
-      JSON.stringify({ pid: process.ppid }),
-    );
+  const createForeignLock = async (mtime: Date) => {
+    await fs.mkdir(getLockPath(dataDir), { recursive: true });
+    await fs.utimes(getLockPath(dataDir), mtime, mtime);
+  };
+
+  it("refuses a second lock while this process holds it", async () => {
+    const release = await acquireLock(dataDir);
+    expect(release).not.toBeNull();
+    expect(await acquireLock(dataDir)).toBeNull();
+    await release?.();
+  });
+
+  it("refuses a lock another process keeps fresh", async () => {
+    await createForeignLock(new Date());
     expect(await acquireLock(dataDir)).toBeNull();
   });
 
-  it("takes over a lock older than an hour", async () => {
-    await fs.mkdir(path.join(dataDir, "tmp"), { recursive: true });
-    await fs.writeFile(
-      getLockPath(dataDir),
-      JSON.stringify({ pid: process.ppid }),
-    );
-    const release = await acquireLock(
-      dataDir,
-      Date.now() + 2 * 60 * 60 * 1_000,
-    );
+  it("takes over a lock whose holder stopped refreshing it", async () => {
+    await createForeignLock(new Date(Date.now() - 60_000));
+    const release = await acquireLock(dataDir);
     expect(release).not.toBeNull();
     await release?.();
     await expect(fs.stat(getLockPath(dataDir))).rejects.toThrow();
@@ -95,14 +95,8 @@ describe("acquireLock", () => {
     const release = await acquireLock(dataDir);
     expect(release).not.toBeNull();
     await release?.();
-    expect(await acquireLock(dataDir)).not.toBeNull();
-  });
-});
-
-describe("decodeHtmlEntities", () => {
-  it("decodes named and numeric entities once", () => {
-    expect(decodeHtmlEntities("a &amp;lt; b &#39;c&#x27; &unknown; &#0;")).toBe(
-      "a &lt; b 'c' &unknown; &#0;",
-    );
+    const next = await acquireLock(dataDir);
+    expect(next).not.toBeNull();
+    await next?.();
   });
 });

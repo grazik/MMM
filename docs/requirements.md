@@ -160,6 +160,8 @@ A visual mockup exists (owner has the link) showing the feed, the end of the fee
 - **Runtime:** Node 24 LTS, TypeScript in strict mode.
 - **Server:** Hono with `@hono/node-server`.
 - **Scheduler:** `croner` (supports an explicit timezone).
+- **HTML entity decoding (titles):** `entities`.
+- **Fetch lock (single-flight across the server and the CLI):** `proper-lockfile`.
 - **Frontend:** Vite with vanilla TypeScript and plain CSS.
 - **Storage:** filesystem only, no database:
   - `DATA_DIR/sets/YYYY-MM-DD/manifest.json` plus that day's media files;

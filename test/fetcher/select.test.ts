@@ -116,7 +116,8 @@ describe("selectPosts", () => {
       posts: [
         syntheticPost({
           id: "t1",
-          title: "Tom &amp; Jerry&#39;s &quot;day&quot; &#x27;ok&#x27; &lt;3",
+          title:
+            "Tom &amp; Jerry&#39;s &quot;caf&eacute;&quot; &#x27;ok&#x27; &lt;3 &amp;lt;",
         }),
       ],
       isEndOfList: true,
@@ -126,7 +127,7 @@ describe("selectPosts", () => {
     if (!result.ok) return;
     expect(result.items[0]).toEqual({
       id: "t1",
-      title: "Tom & Jerry's \"day\" 'ok' <3",
+      title: "Tom & Jerry's \"café\" 'ok' <3 &lt;",
       kind: "image",
       mediaFile: "t1.jpg",
       width: 700,
