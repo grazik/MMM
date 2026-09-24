@@ -30,7 +30,7 @@ const render = async (root: HTMLElement) => {
     header,
     ...(stale ? [createStaleNotice()] : []),
     createFeed(items),
-    createFeedEnd(),
+    createFeedEnd(items.length),
   );
 };
 

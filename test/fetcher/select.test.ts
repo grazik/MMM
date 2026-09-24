@@ -159,6 +159,26 @@ describe("selectPosts", () => {
     expect(result.skipped.promoted).toBe(1);
   });
 
+  it("skips posts whose id is not safe as a file name", async () => {
+    const page: HotPage = {
+      posts: [
+        syntheticPost({ id: "../../escape" }),
+        syntheticPost({ id: "a/b" }),
+        syntheticPost({ id: "ok_id-1" }),
+      ],
+      isEndOfList: true,
+    };
+    const { resultPromise, downloads } = select({ pages: [page], setSize: 1 });
+    const result = await resultPromise;
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.items.map((item) => item.id)).toEqual(["ok_id-1"]);
+    expect(result.skipped.unsafeId).toBe(2);
+    expect(downloads.requests.map((request) => request.baseName)).toEqual([
+      "ok_id-1",
+    ]);
+  });
+
   it("skips posts from the previous set and fetches the next page", async () => {
     const excludedIds = FIXTURE_IDS.slice(0, 3);
     const { resultPromise, pages } = select({ excludedIds });

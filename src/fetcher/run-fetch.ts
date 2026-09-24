@@ -43,9 +43,11 @@ const buildAndPublish = async (
   date: string,
   now: Date,
 ): Promise<Result> => {
-  const leftovers = await cleanTmpDir(config.dataDir);
-  if (leftovers.length > 0)
-    log.warn("removed stale tmp leftovers", { leftovers });
+  const { removed, restored } = await cleanTmpDir(config.dataDir);
+  if (restored.length > 0)
+    log.warn("restored sets orphaned by an interrupted publish", { restored });
+  if (removed.length > 0)
+    log.warn("removed stale tmp leftovers", { leftovers: removed });
 
   const excludedIds = await loadPreviousIds(config.dataDir, date);
   const token = await getGuestToken();

@@ -59,9 +59,42 @@ describe("cleanTmpDir", () => {
   it("removes leftovers but keeps the lock file", async () => {
     await createBuildDir(dataDir, "2026-09-22");
     const release = await acquireLock(dataDir);
-    expect(await cleanTmpDir(dataDir)).toHaveLength(1);
+    const { removed, restored } = await cleanTmpDir(dataDir);
+    expect(removed).toHaveLength(1);
+    expect(restored).toEqual([]);
     expect(await fs.readdir(path.join(dataDir, "tmp"))).toEqual(["fetch.lock"]);
     await release?.();
+  });
+
+  const createOldSet = async (name: string, content: string) => {
+    const oldDir = path.join(dataDir, "tmp", name);
+    await fs.mkdir(oldDir, { recursive: true });
+    await fs.writeFile(path.join(oldDir, "manifest.json"), content);
+  };
+
+  const readSetManifest = (date: string) =>
+    fs.readFile(path.join(dataDir, "sets", date, "manifest.json"), "utf8");
+
+  it("restores a set orphaned between the two publish renames", async () => {
+    await createOldSet("old-2026-09-23-abc", "served");
+    const { removed, restored } = await cleanTmpDir(dataDir);
+    expect(restored).toEqual(["old-2026-09-23-abc"]);
+    expect(removed).toEqual([]);
+    expect(await readSetManifest("2026-09-23")).toBe("served");
+    expect(await fs.readdir(path.join(dataDir, "tmp"))).toEqual([]);
+  });
+
+  it("drops a moved-aside set when that date is already published", async () => {
+    await publishSet(
+      dataDir,
+      "2026-09-23",
+      await buildWithFile("2026-09-23", "new"),
+    );
+    await createOldSet("old-2026-09-23-abc", "old");
+    const { removed, restored } = await cleanTmpDir(dataDir);
+    expect(restored).toEqual([]);
+    expect(removed).toEqual(["old-2026-09-23-abc"]);
+    expect(await readSetManifest("2026-09-23")).toBe("new");
   });
 });
 

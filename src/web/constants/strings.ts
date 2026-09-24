@@ -5,7 +5,6 @@ export const UI_STRINGS = {
   empty: "No memes yet. The first set is on its way.",
   loadFailed: "Couldn't load the memes. Try again in a moment.",
   endTitle: "Come back tomorrow",
-  endSubtitle: "That was all ten for today.",
   backToTop: "Back to top",
   mute: "Mute",
   unmute: "Unmute",
@@ -13,3 +12,6 @@ export const UI_STRINGS = {
 
 export const formatCounter = (position: number, total: number) =>
   `${position} / ${total}`;
+
+export const formatEndSubtitle = (total: number) =>
+  `That was all ${total} for today.`;

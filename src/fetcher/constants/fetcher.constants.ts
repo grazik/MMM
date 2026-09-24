@@ -6,6 +6,9 @@ export const LOCK_STALE_AFTER_MS = 30_000;
 
 export const LOCK_FILE_NAME = "fetch.lock";
 
+// The post id becomes a media file name, so a slash or ".." would write outside the build directory.
+export const SAFE_POST_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
+
 export const FETCH_ERRORS = {
   lockHeld: "Another fetch is already running",
   notEnoughPosts: "Not enough eligible posts in Hot",

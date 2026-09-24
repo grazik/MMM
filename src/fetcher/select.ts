@@ -1,6 +1,9 @@
 import { decodeHTML } from "entities";
 import type { ManifestItem } from "@/types/manifest.types";
-import { FETCH_ERRORS } from "./constants/fetcher.constants";
+import {
+  FETCH_ERRORS,
+  SAFE_POST_ID_PATTERN,
+} from "./constants/fetcher.constants";
 import { chooseMedia, isSupportedPostType } from "./media";
 import type {
   DownloadMedia,
@@ -20,6 +23,7 @@ export type SelectOptions = {
 };
 
 const createSkipCounts = (): SkipCounts => ({
+  unsafeId: 0,
   unsupportedType: 0,
   promoted: 0,
   inPreviousSet: 0,
@@ -32,6 +36,7 @@ const getPreDownloadSkipReason = (
   post: NineGagPost,
   excludedIds: ReadonlySet<string>,
 ): SkipReason | null => {
+  if (!SAFE_POST_ID_PATTERN.test(post.id)) return "unsafeId";
   if (!isSupportedPostType(post.type)) return "unsupportedType";
   if (post.promoted) return "promoted";
   if (excludedIds.has(post.id)) return "inPreviousSet";

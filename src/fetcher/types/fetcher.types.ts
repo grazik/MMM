@@ -35,6 +35,7 @@ export type DownloadMedia = (
 ) => Promise<ValueResult<string>>;
 
 export type SkipReason =
+  | "unsafeId"
   | "unsupportedType"
   | "promoted"
   | "inPreviousSet"
