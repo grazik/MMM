@@ -15,7 +15,8 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "typecheck": "tsc --noEmit && tsc --noEmit -p src/web",
-    "test": "vitest run"
+    "test": "vitest run",
+    "icons": "node scripts/generate-icons.ts"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.3.0",
@@ -31,6 +32,7 @@
     "@biomejs/biome": "^2.5.14",
     "@types/node": "^24.13.6",
     "@types/proper-lockfile": "^4.1.4",
+    "sharp": "^0.35.4",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.1"
