@@ -4,6 +4,7 @@ import { loadConfig } from "@/config/config";
 import { createLogger } from "@/log/logger";
 import { startScheduler } from "@/scheduler/scheduler";
 import { createApp } from "@/server/app";
+import { checkDataDirWritable } from "@/storage/data-dir";
 
 const log = createLogger("main");
 
@@ -13,6 +14,13 @@ const WEB_DIR = fileURLToPath(new URL("./web", import.meta.url));
 const SHUTDOWN_TIMEOUT_MS = 8_000;
 
 const config = loadConfig();
+const dataDirCheck = await checkDataDirWritable(config.dataDir);
+if (!dataDirCheck.ok) {
+  log.error("data dir not writable", undefined, {
+    reason: dataDirCheck.message,
+  });
+  process.exit(1);
+}
 const app = createApp({ config, webDir: WEB_DIR });
 const server = serve({ fetch: app.fetch, port: config.port }, (info) => {
   log.info("server listening", { port: info.port, dataDir: config.dataDir });
