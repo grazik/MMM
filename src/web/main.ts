@@ -8,6 +8,7 @@ import { UI_STRINGS } from "@/web/constants/strings";
 import "@/web/styles/fonts.css";
 import "@/web/styles/tokens.css";
 import "@/web/styles/base.css";
+import "@/web/components/app-loading/app-loading.css";
 
 const render = async (root: HTMLElement) => {
   const result = await fetchToday();
