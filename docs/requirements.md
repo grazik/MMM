@@ -137,6 +137,7 @@ Plain and simple. Follow the system light/dark setting (`prefers-color-scheme`).
 - Stale notice: surface background, 12px rounded corners, a small refresh icon in the accent color.
 - Respect safe-area insets (`viewport-fit=cover` plus `env(safe-area-inset-*)`).
 - Use inline SVG icons; no icon font, no emoji.
+- Favicon: cream (`#FAF7F2`) Fraunces italic "M" on a rounded accent (`#B8431F`) tile, served as `favicon.svg`, `favicon.ico` (16/32/48) and a 180px `apple-touch-icon.png` from `src/web/public/`.
 
 A visual mockup exists (owner has the link) showing the feed, the end of the feed, and the stale state.
 
