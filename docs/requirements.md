@@ -236,7 +236,9 @@ Also provide an example Caddy site block with a placeholder hostname, reverse-pr
   - `docker/build-push-action@v6` with `platforms: linux/amd64` and GHA cache;
   - **on pull requests the image is built but not pushed** (`push: false`), so a broken Dockerfile fails the PR before it reaches `main`;
   - permissions: `contents: read`, `packages: write`.
-- **`deploy` job** (needs `build`, `permissions: {}`), **runs only on push to `main` and `workflow_dispatch`**, never on pull requests:
+- **`deploy` job** (needs `build`, `permissions: {}`, `environment: production`), **runs only on push to `main` and `workflow_dispatch` from `main`**, never on pull requests or other branches. The `if` lists the allowed events and ref instead of excluding pull requests:
+  - the `production` GitHub Environment (configured by the owner) allows deployments from `main` only;
+  - all deploy secrets (`TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`, `DEPLOY_SSH_KEY`, `APPS_HOST`, `APPS_HOST_KEY`) are environment secrets of `production`, not repository secrets, so a job outside `main` never receives them;
   - join the tailnet with `tailscale/github-action@v3`, using secrets `TS_OAUTH_CLIENT_ID` and `TS_OAUTH_SECRET` and `tags: tag:ci`;
   - SSH to `deploy@${{ secrets.APPS_HOST }}` using secrets `DEPLOY_SSH_KEY` and `APPS_HOST_KEY`.
 

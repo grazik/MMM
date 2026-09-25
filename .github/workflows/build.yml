@@ -66,7 +66,10 @@ jobs:
 
   deploy:
     needs: build
-    if: github.event_name != 'pull_request'
+    # List allowed triggers instead of excluding PRs, so a newly added trigger can't deploy by accident.
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    # Deploy secrets live only in this environment, which accepts only main; a branch that edits this job gets no secrets.
+    environment: production
     runs-on: ubuntu-latest
     permissions: {}
     steps:
