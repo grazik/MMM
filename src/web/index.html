@@ -25,7 +25,18 @@
     <link rel="manifest" href="/manifest.webmanifest" />
   </head>
   <body>
-    <div id="app" class="app"></div>
+    <!-- Static so it paints before the bundle runs; main.ts replaces it with the feed. -->
+    <div id="app" class="app">
+      <div class="app-loading" role="status" aria-label="Loading">
+        <img
+          class="app-loading__logo"
+          src="/favicon.svg"
+          alt=""
+          width="72"
+          height="72"
+        />
+      </div>
+    </div>
     <script type="module" src="./main.ts"></script>
   </body>
 </html>

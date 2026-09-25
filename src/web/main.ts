@@ -1,5 +1,6 @@
 import { fetchToday } from "@/web/api/fetch-today";
 import { createAppHeader } from "@/web/components/app-header/app-header";
+import "@/web/components/app-loading/app-loading.css";
 import { createEmptyState } from "@/web/components/empty-state/empty-state";
 import { createFeed } from "@/web/components/feed/feed";
 import { createFeedEnd } from "@/web/components/feed-end/feed-end";

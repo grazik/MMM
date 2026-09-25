@@ -109,6 +109,7 @@ Mobile-first, single page. The UI text is in **English**, but the app name stays
 - **End of feed:** "Come back tomorrow" with "That was all N for today." below it (N is the number of items shown, so it follows `SET_SIZE`), and a circular **back-to-top** arrow button that smooth-scrolls to the top.
 - **Stale notice** (when `stale` is true): a small notice under the header: "Today's memes aren't ready yet, so here's yesterday's set. Retrying in the background." The header date shows the set's date.
 - **Empty state:** "No memes yet. The first set is on its way."
+- **Loading:** until the first response arrives, the logo tile is centered on the screen and pulses gently (static under `prefers-reduced-motion`). It is plain HTML in `index.html`, so it paints before the script runs, and appears only after a short delay so fast loads don't flash it.
 
 ### 5.2 Media behavior
 
