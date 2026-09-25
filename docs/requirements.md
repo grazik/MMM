@@ -138,7 +138,7 @@ Plain and simple. Follow the system light/dark setting (`prefers-color-scheme`).
 - Respect safe-area insets (`viewport-fit=cover` plus `env(safe-area-inset-*)`).
 - Use inline SVG icons; no icon font, no emoji.
 - Favicon: cream (`#FAF7F2`) Fraunces italic "M" on a rounded accent (`#B8431F`) tile, served as `favicon.svg`, `favicon.ico` (16/32/48) and a 180px `apple-touch-icon.png` from `src/web/public/`.
-- Installable (minimal PWA): `src/web/public/manifest.webmanifest` with name "Memy Małej Moni", short name "MMM", `start_url` and `scope` `/`, `display: standalone`, background and theme color `#FAF7F2`. Icons: `icon-192.png`, `icon-512.png`, `icon-maskable-512.png` (glyph inside the 80% safe zone) and an opaque `apple-touch-icon.png`, all generated from `favicon.svg` by `npm run icons`. `<head>` sets `theme-color` per color scheme and `apple-mobile-web-app-title` "MMM".
+- Installable (minimal PWA): `src/web/public/manifest.webmanifest` with name "Memy Małej Moni", short name "MMM", `start_url` and `scope` `/`, `display: standalone`, background and theme color `#141312` (dark by default; the per-scheme `theme-color` meta tags still switch the browser UI to light for light-scheme users). Icons: `icon-192.png`, `icon-512.png`, `icon-maskable-512.png` (glyph inside the 80% safe zone) and an opaque `apple-touch-icon.png`, all generated from `favicon.svg` by `npm run icons`. `<head>` sets `theme-color` per color scheme and `apple-mobile-web-app-title` "MMM".
 - No service worker, offline cache, push notifications, badging or install prompts: the app stays unobtrusive.
 
 A visual mockup exists (owner has the link) showing the feed, the end of the feed, and the stale state.
