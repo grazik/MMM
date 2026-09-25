@@ -56,13 +56,14 @@ The point is to **limit meme exposure** while keeping a bit of the fun of scroll
 - **Day boundary:** all dates use the **Europe/Warsaw** timezone. The set for date D is fetched at 06:00 on D.
 - **Selection:** walk the Hot feed in order and take the **first 10 eligible posts**. A post is eligible when:
   - its type is supported: a single image, an animated post, or a video;
+  - its id contains only letters, digits, `_` and `-` (the id becomes the media file name, so anything else could escape the set directory);
   - it was **not in the previous stored set** (compare by 9gag post id; if there is no previous set, skip this check);
   - its media file downloads successfully.
 - Unsupported types (multi-image posts, promoted posts, embeds, anything else) are **skipped** and the next post is taken. The set must always contain exactly 10 displayable items.
 - Fetch further pages of Hot as needed, up to a configurable cap (default 5 pages). If the cap is reached with fewer than 10 eligible posts, the run counts as failed.
 - **Media is stored locally.** The app never hotlinks 9gag.
 - **Media format:** for animated posts and videos prefer the MP4 (H.264) variant, because it plays everywhere including iOS Safari. Use WebM only if no MP4 exists. An animated post that only exists as a GIF is shown as an image.
-- **Atomic publish:** build the new set in a temporary directory and move it into place only when all 10 media files are downloaded and the manifest is written. A half-finished set must never be served.
+- **Atomic publish:** build the new set in a temporary directory and move it into place only when all 10 media files are downloaded and the manifest is written. A half-finished set must never be served. When a set for the same date is replaced, the old set is moved aside into `tmp/` first; if the process dies before the new one is in place, the next run restores the moved-aside set before cleaning `tmp/`.
 
 Each stored item holds: 9gag id, title (HTML entities decoded), kind (`image` or `video`), media file name, width, height, poster image file name (for videos, if available), whether it has audio (if 9gag provides this), and the original post URL (for debugging; not displayed).
 
@@ -105,7 +106,7 @@ Mobile-first, single page. The UI text is in **English**, but the app name stays
   - the title (rendered as text, never as HTML);
   - the media at **full screen width**, with its aspect ratio reserved from `width`/`height` so the page never jumps while loading.
 - On screens wider than a phone, center the column with a max width of about 600px.
-- **End of feed:** "Come back tomorrow" with "That was all ten for today." below it, and a circular **back-to-top** arrow button that smooth-scrolls to the top.
+- **End of feed:** "Come back tomorrow" with "That was all N for today." below it (N is the number of items shown, so it follows `SET_SIZE`), and a circular **back-to-top** arrow button that smooth-scrolls to the top.
 - **Stale notice** (when `stale` is true): a small notice under the header: "Today's memes aren't ready yet, so here's yesterday's set. Retrying in the background." The header date shows the set's date.
 - **Empty state:** "No memes yet. The first set is on its way."
 
@@ -117,7 +118,6 @@ Mobile-first, single page. The UI text is in **English**, but the app name stays
   - **Only one video plays at a time**: the most visible one.
   - A **mute toggle** button (at least 44×44px, bottom-right corner of the video, with an `aria-label` of "Unmute"/"Mute"). Every video starts muted, and unmuting applies only to that video. Show the button only on videos with audio if 9gag provides that information; otherwise on all videos.
   - No length limit and no skipping of long videos.
-- Preload the next one or two items so scrolling feels instant.
 
 ### 5.3 Visual design
 
@@ -161,6 +161,8 @@ A visual mockup exists (owner has the link) showing the feed, the end of the fee
 - **Runtime:** Node 24 LTS, TypeScript in strict mode.
 - **Server:** Hono with `@hono/node-server`.
 - **Scheduler:** `croner` (supports an explicit timezone).
+- **HTML entity decoding (titles):** `entities`.
+- **Fetch lock (single-flight across the server and the CLI):** `proper-lockfile`.
 - **Frontend:** Vite with vanilla TypeScript and plain CSS.
 - **Storage:** filesystem only, no database:
   - `DATA_DIR/sets/YYYY-MM-DD/manifest.json` plus that day's media files;
@@ -180,7 +182,7 @@ src/
   fetcher/    # 9gag client, selection, download, atomic publish
   scheduler/  # cron, startup catch-up, retries
   web/        # Vite frontend
-  shared/     # types shared by server and web
+  types/      # types used by more than one module, server and web alike
 test/
 ```
 
@@ -234,7 +236,9 @@ Also provide an example Caddy site block with a placeholder hostname, reverse-pr
   - `docker/build-push-action@v6` with `platforms: linux/amd64` and GHA cache;
   - **on pull requests the image is built but not pushed** (`push: false`), so a broken Dockerfile fails the PR before it reaches `main`;
   - permissions: `contents: read`, `packages: write`.
-- **`deploy` job** (needs `build`, `permissions: {}`), **runs only on push to `main` and `workflow_dispatch`**, never on pull requests:
+- **`deploy` job** (needs `build`, `permissions: {}`, `environment: production`), **runs only on push to `main` and `workflow_dispatch` from `main`**, never on pull requests or other branches. The `if` lists the allowed events and ref instead of excluding pull requests:
+  - the `production` GitHub Environment (configured by the owner) allows deployments from `main` only;
+  - all deploy secrets (`TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`, `DEPLOY_SSH_KEY`, `APPS_HOST`, `APPS_HOST_KEY`) are environment secrets of `production`, not repository secrets, so a job outside `main` never receives them;
   - join the tailnet with `tailscale/github-action@v3`, using secrets `TS_OAUTH_CLIENT_ID` and `TS_OAUTH_SECRET` and `tags: tag:ci`;
   - SSH to `deploy@${{ secrets.APPS_HOST }}` using secrets `DEPLOY_SSH_KEY` and `APPS_HOST_KEY`.
 

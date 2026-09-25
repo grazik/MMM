@@ -18,6 +18,7 @@
 - End every `switch` on a union with `default:` and `value satisfies never`.
 - Log as `console.error("[module] what failed", err)`; never log and continue silently.
 - Put shared types in `types/*.types.ts`; never import a type from a module that also does work.
+- Keep types used by more than one module, server or web, in `src/types/`; keep feature-only types in `src/<feature>/types/`. Anything web imports from `src/types/` must not depend on Node or the DOM.
 - Hoist anything a second module needs into `types/` or `constants/` the moment it is reused.
 - Import through the path alias (`@/…`); use relative paths only for co-located siblings.
 - Use `import type` for type-only imports. (unconfirmed — mixed in this repo)

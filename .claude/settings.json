@@ -17,15 +17,7 @@
       "Bash(gh pr view:*)",
       "Bash(gh pr checks:*)"
     ],
-    "ask": [
-      "Bash(git push:*)",
-      "Bash(npm install:*)",
-      "Bash(docker run:*)"
-    ],
-    "deny": [
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Bash(gh pr merge:*)"
-    ]
+    "ask": ["Bash(git push:*)", "Bash(npm install:*)", "Bash(docker run:*)"],
+    "deny": ["Read(./.env)", "Read(./.env.*)", "Bash(gh pr merge:*)"]
   }
 }

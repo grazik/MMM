@@ -1,0 +1,39 @@
+.feed-item {
+  --feed-item-aspect: 1 / 1;
+}
+
+.feed-item__header {
+  padding: 0 var(--gutter) var(--space-3);
+}
+
+.feed-item__counter {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--color-accent);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.feed-item__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.feed-item__media {
+  width: 100%;
+  aspect-ratio: var(--feed-item-aspect);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.feed-item__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

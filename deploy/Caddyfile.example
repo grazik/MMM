@@ -1,0 +1,4 @@
+# Example site block; replace the hostname with your own.
+mmm.example.home {
+	reverse_proxy mmm:3000
+}
