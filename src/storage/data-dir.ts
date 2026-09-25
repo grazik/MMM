@@ -18,7 +18,8 @@ export const checkDataDirWritable = async (
     const uid = process.getuid?.() ?? "unknown";
     return {
       ok: false,
-      message: `DATA_DIR ${dataDir} is not writable by uid ${uid} (${String(err)}); on the host run: chown -R ${uid}:${uid} <mounted data dir>`,
+      // The container can't see how Docker maps its uid on the host, so name the common case and the exception.
+      message: `DATA_DIR ${dataDir} is not writable by container uid ${uid} (${String(err)}); chown the mounted host directory to the host uid that maps to it (${uid} unless Docker runs rootless or with userns-remap)`,
     };
   }
 };

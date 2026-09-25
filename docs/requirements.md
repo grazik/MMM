@@ -167,7 +167,7 @@ A visual mockup exists (owner has the link) showing the feed, the end of the fee
 - **Storage:** filesystem only, no database:
   - `DATA_DIR/sets/YYYY-MM-DD/manifest.json` plus that day's media files;
   - `DATA_DIR/tmp/` for sets being built;
-  - on startup, the server and the fetch CLI check that `DATA_DIR`, `sets/` and `tmp/` are writable, and exit with an error naming the uid and the `chown` fix if not. A bind-mounted directory created by Docker is owned by root, and without this check the problem only shows at the first fetch.
+  - on startup, the server and the fetch CLI check that `DATA_DIR`, `sets/` and `tmp/` are writable, and exit with an error naming the container uid and which host directory to `chown` if not (the host uid equals the container uid unless Docker runs rootless or with userns-remap). A bind-mounted directory created by Docker is owned by root, and without this check the problem only shows at the first fetch.
 - **Lint and format:** Biome.
 - **Tests:** Vitest, for the logic only:
   - eligibility and selection (including skipping unsupported types and yesterday's duplicates, using `test/fixtures/sample-hot.json` as a fixture);
